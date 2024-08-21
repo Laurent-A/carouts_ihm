@@ -1,0 +1,7 @@
+<div class="vehicule-cards">
+  <div *ngFor="let vehicule of vehicules" class="card" (click)="goToFactures(vehicule.id)">
+    <h3>{{ vehicule.label }}</h3>
+    <p>Kilométrage: {{ vehicule.kilometrage }}</p>
+    <p>Catégorie: {{ vehicule.categorie.label }}</p>
+  </div>
+</div>
