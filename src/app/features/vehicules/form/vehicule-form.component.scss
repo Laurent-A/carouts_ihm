@@ -1,0 +1,192 @@
+@use 'styles/variables' as *;
+@use 'sass:color';
+
+// ─── Layout ───────────────────────────────────────────────────────────────────
+
+.vform {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background-color: $blue-bg;
+  padding-bottom: calc(64px + env(safe-area-inset-bottom));
+}
+
+.vform__body {
+  flex: 1;
+  padding: $spacing-md;
+  max-width: 430px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+// ─── Loading ──────────────────────────────────────────────────────────────────
+
+.loading-state {
+  display: flex;
+  justify-content: center;
+  padding: $spacing-xl;
+
+  &__spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid rgba($blue-main, 0.2);
+    border-top-color: $blue-main;
+    border-radius: 50%;
+    animation: spin 0.75s linear infinite;
+  }
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+// ─── Sections de formulaire ───────────────────────────────────────────────────
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-sm;
+}
+
+.form-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: $blue-dark;
+  letter-spacing: 0.01em;
+}
+
+.form-required {
+  color: $danger-text;
+  margin-left: 2px;
+}
+
+// ─── Inputs ───────────────────────────────────────────────────────────────────
+
+.form-input {
+  width: 100%;
+  height: 46px;
+  padding: 0 $spacing-sm;
+  border: 1.5px solid rgba($blue-main, 0.2);
+  border-radius: $radius-md;
+  background: #fff;
+  font-family: $font-body;
+  font-size: 0.9rem;
+  color: $blue-dark;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  -webkit-appearance: none;
+
+  &::placeholder { color: rgba($text-muted, 0.7); }
+
+  &:focus {
+    border-color: $blue-main;
+    box-shadow: 0 0 0 3px rgba($blue-main, 0.12);
+  }
+
+  &--error {
+    border-color: $danger-text;
+    &:focus { box-shadow: 0 0 0 3px rgba($danger-text, 0.1); }
+  }
+
+  &--immat {
+    font-family: $font-display;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+  }
+
+  // Masquer les flèches sur les inputs number
+  &[type='number'] {
+    -moz-appearance: textfield;
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  }
+}
+
+// ─── Input avec suffixe ───────────────────────────────────────────────────────
+
+.input-suffix-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .form-input { padding-right: 42px; }
+}
+
+.input-suffix {
+  position: absolute;
+  right: $spacing-sm;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: $text-muted;
+  pointer-events: none;
+}
+
+// ─── Messages d'erreur ────────────────────────────────────────────────────────
+
+.form-error {
+  font-size: 0.75rem;
+  color: $danger-text;
+  font-weight: 500;
+}
+
+// ─── Actions ─────────────────────────────────────────────────────────────────
+
+.form-actions {
+  display: flex;
+  gap: $spacing-sm;
+  padding-top: $spacing-xs;
+}
+
+.btn-secondary {
+  flex: 1;
+  height: 48px;
+  border: none;
+  border-radius: $radius-md;
+  background: rgba($blue-main, 0.1);
+  color: $blue-main;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:active { background: rgba($blue-main, 0.18); }
+}
+
+.btn-primary {
+  flex: 2;
+  height: 48px;
+  border: none;
+  border-radius: $radius-md;
+  background: $blue-main;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.15s, transform 0.1s;
+
+  &:active { background: $blue-dark; transform: scale(0.98); }
+  &:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+}
+
+.btn-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(#fff, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}

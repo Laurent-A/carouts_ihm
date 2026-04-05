@@ -1,0 +1,74 @@
+@use '../../../styles/variables.scss' as *;
+
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba($blue-dark, 0.45);
+  backdrop-filter: blur(3px);
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 0 env(safe-area-inset-bottom);
+  animation: fadeIn 0.15s ease;
+}
+
+.dialog {
+  background: #fff;
+  border-radius: $radius-lg $radius-lg 0 0;
+  padding: $spacing-lg $spacing-md $spacing-md;
+  width: 100%;
+  max-width: 430px;
+  animation: slideUp 0.2s ease;
+
+  &__titre {
+    font-family: $font-display;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: $blue-dark;
+    margin: 0 0 $spacing-sm;
+  }
+
+  &__message {
+    font-size: 0.875rem;
+    color: $text-muted;
+    line-height: 1.5;
+    margin: 0 0 $spacing-lg;
+  }
+
+  &__actions {
+    display: flex;
+    gap: $spacing-sm;
+  }
+
+  &__btn {
+    flex: 1;
+    padding: 13px;
+    border-radius: $radius-md;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.15s;
+
+    &:active { opacity: 0.8; }
+
+    &--annuler {
+      background: $blue-bg;
+      color: $blue-main;
+    }
+
+    &--danger {
+      background: $danger-bg;
+      color: $danger-text;
+    }
+
+    &--confirm {
+      background: $blue-main;
+      color: #fff;
+    }
+  }
+}
+
+@keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(40px); } to { transform: translateY(0); } }

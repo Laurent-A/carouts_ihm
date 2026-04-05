@@ -1,0 +1,132 @@
+<div class="vform">
+
+  <app-topbar
+    [titre]="titre"
+    [retour]="true"
+    (retourClick)="annuler()">
+  </app-topbar>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <div class="loading-state__spinner"></div>
+    </div>
+  }
+
+  @if (!loading()) {
+    <form class="vform__body" [formGroup]="form" (ngSubmit)="sauvegarder()">
+
+      <!-- ── Catégorie ────────────────────────────────────────────────────────── -->
+      <div class="form-section">
+        <label class="form-label">Type de véhicule <span class="form-required">*</span></label>
+        <app-chip-selector
+          [options]="categorieOptions"
+          [multiple]="false"
+          formControlName="categorie">
+        </app-chip-selector>
+      </div>
+
+      <!-- ── Nom ─────────────────────────────────────────────────────────────── -->
+      <div class="form-section">
+        <label class="form-label" for="nom">Nom <span class="form-required">*</span></label>
+        <input
+          id="nom"
+          type="text"
+          class="form-input"
+          [class.form-input--error]="nomInvalid"
+          formControlName="nom"
+          placeholder="Ex : Ma Peugeot, Moto du weekend…"
+          autocomplete="off" />
+        @if (nomInvalid) {
+          <span class="form-error">Le nom est obligatoire</span>
+        }
+      </div>
+
+      <!-- ── Kilométrage ──────────────────────────────────────────────────────── -->
+      <div class="form-section">
+        <label class="form-label" for="kilometrage">Kilométrage actuel <span class="form-required">*</span></label>
+        <div class="input-suffix-wrap">
+          <input
+            id="kilometrage"
+            type="number"
+            inputmode="numeric"
+            class="form-input"
+            [class.form-input--error]="kmInvalid"
+            formControlName="kilometrage"
+            placeholder="0"
+            min="0" />
+          <span class="input-suffix">km</span>
+        </div>
+        @if (kmInvalid) {
+          <span class="form-error">Le kilométrage est obligatoire</span>
+        }
+      </div>
+
+      <!-- ── Marque & Modèle ─────────────────────────────────────────────────── -->
+      <div class="form-row">
+        <div class="form-section">
+          <label class="form-label" for="marque">Marque</label>
+          <input
+            id="marque"
+            type="text"
+            class="form-input"
+            formControlName="marque"
+            placeholder="Ex : Peugeot"
+            autocomplete="off" />
+        </div>
+        <div class="form-section">
+          <label class="form-label" for="modele">Modèle</label>
+          <input
+            id="modele"
+            type="text"
+            class="form-input"
+            formControlName="modele"
+            placeholder="Ex : 308"
+            autocomplete="off" />
+        </div>
+      </div>
+
+      <!-- ── Année & Immatriculation ─────────────────────────────────────────── -->
+      <div class="form-row">
+        <div class="form-section">
+          <label class="form-label" for="annee">Année</label>
+          <input
+            id="annee"
+            type="number"
+            inputmode="numeric"
+            class="form-input"
+            formControlName="annee"
+            placeholder="Ex : 2019"
+            min="1900"
+            [max]="2099" />
+        </div>
+        <div class="form-section">
+          <label class="form-label" for="immatriculation">Immatriculation</label>
+          <input
+            id="immatriculation"
+            type="text"
+            class="form-input form-input--immat"
+            formControlName="immatriculation"
+            placeholder="AA-000-AA"
+            autocomplete="off"
+            style="text-transform: uppercase" />
+        </div>
+      </div>
+
+      <!-- ── Actions ─────────────────────────────────────────────────────────── -->
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" (click)="annuler()">
+          Annuler
+        </button>
+        <button type="submit" class="btn-primary" [disabled]="saving()">
+          @if (saving()) {
+            <span class="btn-spinner"></span>
+          } @else {
+            {{ estEdition ? 'Enregistrer' : 'Créer le véhicule' }}
+          }
+        </button>
+      </div>
+
+    </form>
+  }
+
+</div>

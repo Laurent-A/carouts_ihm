@@ -1,1 +1,53 @@
-/* You can add global styles to this file, and also import other style files */
+// ── Variables du design system ───────────────────────────────────────────────
+// @use doit être en premier — les fonts sont chargées via <link> dans index.html
+@use '../src/styles/variables.scss' as *;
+
+// ── Reset & base ─────────────────────────────────────────────────────────────
+*, *::before, *::after {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-color: $blue-bg;
+  color-scheme: light;
+}
+
+body {
+  font-family: $font-body;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior-y: contain; // empêche le pull-to-refresh natif
+}
+
+// ── Typographie ───────────────────────────────────────────────────────────────
+h1, h2, h3, h4 {
+  font-family: $font-display;
+  margin: 0;
+}
+
+p { margin: 0; }
+
+a { text-decoration: none; color: inherit; }
+
+button {
+  font-family: $font-body;
+  cursor: pointer;
+}
+
+// ── Utilitaires globaux ───────────────────────────────────────────────────────
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

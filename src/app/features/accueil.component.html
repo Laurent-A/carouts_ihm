@@ -1,0 +1,137 @@
+<div class="accueil">
+
+  <!-- ── Topbar ─────────────────────────────────────────────────── -->
+  <header class="topbar">
+    <div class="topbar__inner">
+      <div class="topbar__logo">
+        <span class="topbar__logo-icon">🔧</span>
+        <span class="topbar__logo-text">Carouts</span>
+      </div>
+      <button class="topbar__btn-add" (click)="ajouterVehicule()" aria-label="Ajouter un véhicule">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        <span>Ajouter</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ── Corps ──────────────────────────────────────────────────── -->
+  <main class="accueil__body">
+
+    <!-- Bandeau stats globales -->
+    <section class="stats-globales" aria-label="Statistiques globales">
+      <div class="stat-card">
+        <span class="stat-card__value">{{ totalVehicules() }}</span>
+        <span class="stat-card__label">Véhicule{{ totalVehicules() > 1 ? 's' : '' }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card__value">{{ totalInterventions() }}</span>
+        <span class="stat-card__label">Intervention{{ totalInterventions() > 1 ? 's' : '' }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card__value">{{ formaterEuros(totalDepensesAnnee()) }}</span>
+        <span class="stat-card__label">Cette année</span>
+      </div>
+    </section>
+
+    <!-- Titre section -->
+    <div class="section-header">
+      <h2 class="section-header__title">Mes véhicules</h2>
+    </div>
+
+    <!-- État de chargement -->
+    @if (loading()) {
+      <div class="loading-state">
+        <div class="loading-state__spinner"></div>
+        <p class="loading-state__text">Chargement…</p>
+      </div>
+    }
+
+    <!-- Liste vide -->
+    @if (!loading() && vehiculesAvecStats().length === 0) {
+      <div class="empty-state">
+        <div class="empty-state__icon">🚗</div>
+        <h3 class="empty-state__title">Aucun véhicule</h3>
+        <p class="empty-state__desc">Ajoutez votre premier véhicule pour commencer le suivi d'entretien.</p>
+        <button class="btn-primary" (click)="ajouterVehicule()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Ajouter un véhicule
+        </button>
+      </div>
+    }
+
+    <!-- Liste des véhicules -->
+    @if (!loading() && vehiculesAvecStats().length > 0) {
+      <ul class="vehicules-list" role="list">
+        @for (item of vehiculesAvecStats(); track item.vehicule.id) {
+          <li class="vehicle-card" (click)="naviguerVersVehicule(item.vehicule.id!)" role="button" [attr.aria-label]="'Voir ' + item.vehicule.nom">
+
+            <!-- En-tête de la carte -->
+            <div class="vehicle-card__header">
+              <div class="vehicle-card__identity">
+                <span class="vehicle-card__icon">{{ iconeCategorie(item.vehicule.categorie) }}</span>
+                <div class="vehicle-card__names">
+                  <span class="vehicle-card__nom">{{ item.vehicule.nom }}</span>
+                  @if (item.vehicule.marque || item.vehicule.modele) {
+                    <span class="vehicle-card__modele">{{ item.vehicule.marque }} {{ item.vehicule.modele }}</span>
+                  }
+                </div>
+              </div>
+
+              <!-- Badge statut -->
+              <span class="badge" [ngClass]="{
+                'badge--ok': item.badge === 'ok',
+                'badge--warning': item.badge === 'a-prevoir',
+                'badge--neutral': item.badge === 'aucun'
+              }">
+                @if (item.badge === 'ok') { ✓ À jour }
+                @if (item.badge === 'a-prevoir') { ⚠ À prévoir }
+                @if (item.badge === 'aucun') { — Nouveau }
+              </span>
+            </div>
+
+            <!-- Séparateur -->
+            <div class="vehicle-card__divider"></div>
+
+            <!-- Métriques -->
+            <div class="vehicle-card__metrics">
+              <div class="metric">
+                <span class="metric__value">{{ formaterKm(item.vehicule.kilometrage) }}</span>
+                <span class="metric__label">Kilométrage</span>
+              </div>
+              <div class="metric">
+                <span class="metric__value">{{ item.nbInterventions }}</span>
+                <span class="metric__label">Intervention{{ item.nbInterventions > 1 ? 's' : '' }}</span>
+              </div>
+              <div class="metric">
+                <span class="metric__value">{{ formaterEuros(item.depensesAnnee) }}</span>
+                <span class="metric__label">Cette année</span>
+              </div>
+            </div>
+
+            <!-- Dernière intervention -->
+            <div class="vehicle-card__footer">
+              <svg class="vehicle-card__footer-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+              </svg>
+              <span>{{ formaterDate(item.derniereIntervention) }}</span>
+            </div>
+
+            <!-- Chevron -->
+            <svg class="vehicle-card__chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+
+          </li>
+        }
+      </ul>
+    }
+
+  </main>
+
+</div>

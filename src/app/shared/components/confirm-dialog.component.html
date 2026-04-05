@@ -1,0 +1,19 @@
+@if (visible) {
+  <div class="dialog-overlay" (click)="annuler.emit()" role="dialog" aria-modal="true">
+    <div class="dialog" (click)="$event.stopPropagation()">
+      <h2 class="dialog__titre">{{ titre }}</h2>
+      <p class="dialog__message">{{ message }}</p>
+      <div class="dialog__actions">
+        <button type="button" class="dialog__btn dialog__btn--annuler" (click)="annuler.emit()">
+          {{ labelAnnuler }}
+        </button>
+        <button type="button" class="dialog__btn"
+                [class.dialog__btn--danger]="danger"
+                [class.dialog__btn--confirm]="!danger"
+                (click)="confirmer.emit()">
+          {{ labelConfirm }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

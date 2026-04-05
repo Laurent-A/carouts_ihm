@@ -1,0 +1,8 @@
+// Styles spécifiques au composant racine.
+// Les styles globaux sont dans src/styles/styles.scss.
+ 
+:host {
+  display: block;
+  min-height: 100dvh;
+}
+ 

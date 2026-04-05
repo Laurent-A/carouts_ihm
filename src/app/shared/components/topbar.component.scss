@@ -1,0 +1,64 @@
+@use '../../../styles/variables.scss' as *;
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: $blue-main;
+  height: 60px;
+  box-shadow: 0 2px 8px rgba($blue-dark, 0.18);
+
+  &__inner {
+    display: grid;
+    grid-template-columns: 44px 1fr 44px;
+    align-items: center;
+    height: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+    padding: 0 $spacing-sm;
+  }
+
+  &__titre {
+    font-family: $font-display;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: -0.01em;
+  }
+
+  &__left  { display: flex; justify-content: flex-start; }
+  &__right { display: flex; justify-content: flex-end; }
+
+  &__placeholder { width: 44px; }
+
+  &__icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(#fff, 0.12);
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &:active { background: rgba(#fff, 0.25); }
+
+    &--danger {
+      background: rgba($danger-bg, 0.18);
+      color: #ffaaaa;
+    }
+
+    &--save {
+      background: rgba($success-bg, 0.2);
+      color: #a8f0d4;
+    }
+  }
+}

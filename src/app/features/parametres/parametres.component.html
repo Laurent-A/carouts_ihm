@@ -1,0 +1,179 @@
+<div class="parametres">
+
+  <app-topbar titre="Paramètres"></app-topbar>
+
+  <main class="parametres__body">
+
+    <!-- ── Feedback toast ──────────────────────────────────────────────────── -->
+    @if (feedbackMessage()) {
+      <div class="toast" [class.toast--error]="feedbackType() === 'error'">
+        @if (feedbackType() === 'success') {
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.5"
+               stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        } @else {
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.5"
+               stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        }
+        {{ feedbackMessage() }}
+      </div>
+    }
+
+    <!-- ── Stats globales ─────────────────────────────────────────────────── -->
+    <section class="section">
+      <h2 class="section__title">Vue d'ensemble {{ anneeEnCours }}</h2>
+
+      @if (loading()) {
+        <div class="stats-grid stats-grid--loading">
+          <div class="stat-card stat-card--skeleton"></div>
+          <div class="stat-card stat-card--skeleton"></div>
+          <div class="stat-card stat-card--skeleton"></div>
+          <div class="stat-card stat-card--skeleton"></div>
+        </div>
+      } @else {
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-card__value">{{ nbVehicules() }}</span>
+            <span class="stat-card__label">Véhicule{{ nbVehicules() > 1 ? 's' : '' }}</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-card__value">{{ nbInterventions() }}</span>
+            <span class="stat-card__label">Intervention{{ nbInterventions() > 1 ? 's' : '' }}</span>
+          </div>
+          <div class="stat-card stat-card--accent">
+            <span class="stat-card__value">{{ formaterEuros(depensesAnnee()) }}</span>
+            <span class="stat-card__label">Dépenses {{ anneeEnCours }}</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-card__value">{{ formaterEuros(depensesTotal()) }}</span>
+            <span class="stat-card__label">Total cumulé</span>
+          </div>
+        </div>
+      }
+    </section>
+
+    <!-- ── Données ────────────────────────────────────────────────────────── -->
+    <section class="section">
+      <h2 class="section__title">Mes données</h2>
+      <div class="action-list">
+
+        <!-- Export -->
+        <button class="action-item" (click)="exporter()" [disabled]="exportLoading()">
+          <div class="action-item__icon action-item__icon--blue">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+          </div>
+          <div class="action-item__text">
+            <span class="action-item__label">Exporter les données</span>
+            <span class="action-item__desc">Télécharger un fichier JSON de sauvegarde</span>
+          </div>
+          @if (exportLoading()) {
+            <div class="action-item__spinner"></div>
+          } @else {
+            <svg class="action-item__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          }
+        </button>
+
+        <!-- Import -->
+        <button class="action-item" (click)="declencherImport()" [disabled]="importLoading()">
+          <div class="action-item__icon action-item__icon--blue">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </div>
+          <div class="action-item__text">
+            <span class="action-item__label">Importer des données</span>
+            <span class="action-item__desc">Restaurer depuis un fichier JSON</span>
+          </div>
+          @if (importLoading()) {
+            <div class="action-item__spinner"></div>
+          } @else {
+            <svg class="action-item__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          }
+        </button>
+
+        <!-- Vider -->
+        <button class="action-item action-item--danger" (click)="demanderVider()">
+          <div class="action-item__icon action-item__icon--danger">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+              <path d="M10 11v6"/><path d="M14 11v6"/>
+              <path d="M9 6V4h6v2"/>
+            </svg>
+          </div>
+          <div class="action-item__text">
+            <span class="action-item__label">Vider toutes les données</span>
+            <span class="action-item__desc">Supprimer véhicules, interventions et notifications</span>
+          </div>
+          <svg class="action-item__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </button>
+
+      </div>
+    </section>
+
+    <!-- ── À propos ───────────────────────────────────────────────────────── -->
+    <section class="section">
+      <h2 class="section__title">À propos</h2>
+      <div class="about-card">
+        <div class="about-card__row">
+          <span class="about-card__key">Application</span>
+          <span class="about-card__value">Carouts</span>
+        </div>
+        <div class="about-card__divider"></div>
+        <div class="about-card__row">
+          <span class="about-card__key">Version</span>
+          <span class="about-card__value">{{ version }}</span>
+        </div>
+        <div class="about-card__divider"></div>
+        <div class="about-card__row">
+          <span class="about-card__key">Stockage</span>
+          <span class="about-card__value">Local · IndexedDB</span>
+        </div>
+        <div class="about-card__divider"></div>
+        <div class="about-card__row">
+          <span class="about-card__key">Données</span>
+          <span class="about-card__value">100% sur votre appareil</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Dialog vider ───────────────────────────────────────────────────────── -->
+  <app-confirm-dialog
+    titre="Vider toutes les données ?"
+    message="Cette action supprimera définitivement tous vos véhicules, interventions et notifications. Elle est irréversible."
+    labelConfirm="Tout supprimer"
+    labelAnnuler="Annuler"
+    [danger]="true"
+    [visible]="dialogViderVisible"
+    (confirmer)="confirmerVider()"
+    (annuler)="annulerDialog()">
+  </app-confirm-dialog>
+
+</div>

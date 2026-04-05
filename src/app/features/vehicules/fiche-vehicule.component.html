@@ -1,0 +1,244 @@
+<div class="fiche">
+
+  <!-- ── Topbar ─────────────────────────────────────────────────────────────── -->
+  <app-topbar
+    [titre]="vehicule()?.nom ?? ''"
+    [retour]="true"
+    actionDroite="delete"
+    (actionClick)="demanderSuppressionVehicule()">
+  </app-topbar>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <div class="loading-state__spinner"></div>
+    </div>
+  }
+
+  @if (!loading() && vehicule()) {
+    <main class="fiche__body">
+
+      <!-- ── Carte identité ──────────────────────────────────────────────────── -->
+      <section class="identity-card">
+        <div class="identity-card__header">
+          <span class="identity-card__icon">{{ iconeCategorie(vehicule()!.categorie) }}</span>
+          <div class="identity-card__info">
+            <h2 class="identity-card__nom">{{ vehicule()!.nom }}</h2>
+            @if (vehicule()!.marque || vehicule()!.modele) {
+              <p class="identity-card__modele">
+                {{ vehicule()!.marque }} {{ vehicule()!.modele }}
+                @if (vehicule()!.annee) { · {{ vehicule()!.annee }} }
+              </p>
+            }
+            @if (vehicule()!.immatriculation) {
+              <span class="identity-card__immat">{{ vehicule()!.immatriculation }}</span>
+            }
+          </div>
+          <button class="identity-card__edit-btn" (click)="modifierVehicule()" aria-label="Modifier le véhicule">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+          </button>
+        </div>
+        <div class="identity-card__km">
+          <span class="identity-card__km-value">{{ vehicule()!.kilometrage | kmFormat }}</span>
+          <span class="identity-card__km-label">kilométrage actuel</span>
+        </div>
+      </section>
+
+      <!-- ── Stats ───────────────────────────────────────────────────────────── -->
+      <section class="stats-row" aria-label="Statistiques">
+        <div class="stat-bloc">
+          <span class="stat-bloc__value">{{ interventions().length }}</span>
+          <span class="stat-bloc__label">Intervention{{ interventions().length > 1 ? 's' : '' }}</span>
+        </div>
+        <div class="stat-bloc__sep"></div>
+        <div class="stat-bloc">
+          <span class="stat-bloc__value">{{ totalDepensesAnnee() | euroFormat }}</span>
+          <span class="stat-bloc__label">Cette année</span>
+        </div>
+        <div class="stat-bloc__sep"></div>
+        <div class="stat-bloc">
+          <span class="stat-bloc__value">{{ totalDepenses() | euroFormat }}</span>
+          <span class="stat-bloc__label">Total</span>
+        </div>
+      </section>
+
+      <!-- ── Dernière intervention ───────────────────────────────────────────── -->
+      @if (derniereIntervention()) {
+        <div class="last-intervention">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+          </svg>
+          Dernière intervention : {{ formaterDate(derniereIntervention()) }}
+        </div>
+      }
+
+      <!-- ── Historique ──────────────────────────────────────────────────────── -->
+      <div class="section-header">
+        <h3 class="section-header__title">Historique</h3>
+        <button class="btn-add" (click)="ajouterIntervention()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Ajouter
+        </button>
+      </div>
+
+      <!-- Liste vide -->
+      @if (interventions().length === 0) {
+        <div class="empty-state">
+          <span class="empty-state__icon">🔧</span>
+          <p class="empty-state__text">Aucune intervention enregistrée</p>
+          <button class="btn-primary" (click)="ajouterIntervention()">
+            Enregistrer la première
+          </button>
+        </div>
+      }
+
+      <!-- Liste interventions -->
+      @if (interventions().length > 0) {
+        <ul class="interventions-list" role="list">
+          @for (item of interventions(); track item.intervention.id) {
+            <li>
+              <app-intervention-item
+                [intervention]="item.intervention"
+                [prestation]="item.prestation"
+                (click)="ouvrirPanneau(item)"
+                (editClick)="modifierIntervention(item.intervention.id!)"
+                (deleteClick)="demanderSuppressionIntervention(item.intervention.id!)">
+              </app-intervention-item>
+            </li>
+          }
+        </ul>
+      }
+
+    </main>
+  }
+
+  <!-- ══ Panneau détail intervention ══════════════════════════════════════════ -->
+  @if (panneauVisible) {
+    <div class="panneau-overlay" (click)="fermerPanneau()" role="dialog" aria-modal="true" aria-label="Détail de l'intervention">
+      <div class="panneau" [class.panneau--visible]="panneauVisible" (click)="$event.stopPropagation()">
+
+        <!-- Poignée -->
+        <div class="panneau__handle"></div>
+
+        @if (interventionSelectionnee()) {
+          <!-- En-tête -->
+          <div class="panneau__header">
+            <div class="panneau__title-group">
+              <span class="panneau__label">{{ interventionSelectionnee()!.prestation?.label ?? 'Intervention' }}</span>
+              <span class="panneau__date">{{ formaterDate(interventionSelectionnee()!.intervention.date) }}</span>
+            </div>
+            <button class="panneau__close" (click)="fermerPanneau()" aria-label="Fermer">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Métriques -->
+          <div class="panneau__metrics">
+            @if (interventionSelectionnee()!.intervention.kilometrage) {
+              <div class="panneau__metric">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 6v6l4 2"/>
+                </svg>
+                <span>{{ interventionSelectionnee()!.intervention.kilometrage | kmFormat }}</span>
+              </div>
+            }
+            @if (interventionSelectionnee()!.intervention.prix) {
+              <div class="panneau__metric panneau__metric--prix">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+                <span>{{ formaterEuros(interventionSelectionnee()!.intervention.prix!) }}</span>
+              </div>
+            }
+          </div>
+
+          <!-- Prestataire -->
+          @if (interventionSelectionnee()!.intervention.prestataire) {
+            <div class="panneau__row">
+              <span class="panneau__row-key">Prestataire</span>
+              <span class="panneau__row-val">{{ interventionSelectionnee()!.intervention.prestataire }}</span>
+            </div>
+          }
+
+          <!-- Notes -->
+          @if (interventionSelectionnee()!.intervention.notes) {
+            <div class="panneau__notes">
+              <span class="panneau__notes-label">Notes</span>
+              <p class="panneau__notes-text">{{ interventionSelectionnee()!.intervention.notes }}</p>
+            </div>
+          }
+
+          <!-- Photo -->
+          @if (interventionSelectionnee()!.intervention.photoPath) {
+            <div class="panneau__photo">
+              <span class="panneau__notes-label">Facture</span>
+              <img
+                class="panneau__photo-img"
+                [src]="interventionSelectionnee()!.intervention.photoPath"
+                alt="Photo de facture" />
+            </div>
+          }
+
+          <!-- Actions -->
+          <div class="panneau__actions">
+            <button class="panneau__btn panneau__btn--edit" (click)="modifierDepuisPanneau()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
+              Modifier
+            </button>
+            <button class="panneau__btn panneau__btn--delete" (click)="supprimerDepuisPanneau()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                <path d="M10 11v6"/><path d="M14 11v6"/>
+              </svg>
+              Supprimer
+            </button>
+          </div>
+        }
+
+      </div>
+    </div>
+  }
+
+  <!-- ── Dialog suppression véhicule ───────────────────────────────────────── -->
+  <app-confirm-dialog
+    titre="Supprimer ce véhicule ?"
+    message="Toutes les interventions et notifications associées seront également supprimées. Cette action est irréversible."
+    labelConfirm="Supprimer"
+    labelAnnuler="Annuler"
+    [danger]="true"
+    [visible]="dialogVehiculeVisible"
+    (confirmer)="confirmerSuppressionVehicule()"
+    (annuler)="annulerDialog()">
+  </app-confirm-dialog>
+
+  <!-- ── Dialog suppression intervention ───────────────────────────────────── -->
+  <app-confirm-dialog
+    titre="Supprimer cette intervention ?"
+    message="Cette action est irréversible."
+    labelConfirm="Supprimer"
+    labelAnnuler="Annuler"
+    [danger]="true"
+    [visible]="dialogInterventionVisible"
+    (confirmer)="confirmerSuppressionIntervention()"
+    (annuler)="annulerDialog()">
+  </app-confirm-dialog>
+
+</div>

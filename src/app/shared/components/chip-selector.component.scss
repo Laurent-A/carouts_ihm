@@ -1,0 +1,29 @@
+@use '../../../styles/variables.scss' as *;
+
+.chip-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-xs;
+
+  &--disabled { opacity: 0.5; pointer-events: none; }
+}
+
+.chip {
+  padding: 7px 14px;
+  border-radius: 20px;
+  border: 1.5px solid rgba($blue-main, 0.25);
+  background: #fff;
+  color: $blue-dark;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:active { transform: scale(0.96); }
+
+  &--active {
+    background: $blue-main;
+    border-color: $blue-main;
+    color: #fff;
+  }
+}

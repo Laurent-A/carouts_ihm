@@ -1,0 +1,500 @@
+@use 'styles/variables' as *;
+@use 'sass:color';
+
+// ─── Layout ───────────────────────────────────────────────────────────────────
+
+.fiche {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background-color: $blue-bg;
+  padding-bottom: calc(64px + env(safe-area-inset-bottom));
+}
+
+.fiche__body {
+  flex: 1;
+  padding: $spacing-md;
+  max-width: 430px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+// ─── Loading ──────────────────────────────────────────────────────────────────
+
+.loading-state {
+  display: flex;
+  justify-content: center;
+  padding: $spacing-xl;
+
+  &__spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid rgba($blue-main, 0.2);
+    border-top-color: $blue-main;
+    border-radius: 50%;
+    animation: spin 0.75s linear infinite;
+  }
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+// ─── Carte identité ───────────────────────────────────────────────────────────
+
+.identity-card {
+  background: #fff;
+  border-radius: $radius-lg;
+  padding: $spacing-md;
+  box-shadow: 0 1px 4px rgba($blue-dark, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    gap: $spacing-sm;
+  }
+
+  &__icon {
+    font-size: 2rem;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  &__nom {
+    font-family: $font-display;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: $blue-dark;
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  &__modele {
+    font-size: 0.82rem;
+    color: $text-muted;
+    margin: 0;
+  }
+
+  &__immat {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: $blue-main;
+    background: $blue-bg;
+    border: 1.5px solid rgba($blue-main, 0.2);
+    border-radius: 5px;
+    padding: 2px 8px;
+    margin-top: 2px;
+    font-family: $font-display;
+  }
+
+  &__edit-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 10px;
+    background: $blue-bg;
+    color: $blue-main;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s;
+
+    &:active { background: color.scale($blue-bg, $lightness: -4%); }
+  }
+
+  &__km {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: $blue-bg;
+    border-radius: $radius-md;
+    padding: $spacing-sm $spacing-md;
+    gap: 2px;
+  }
+
+  &__km-value {
+    font-family: $font-display;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: $blue-dark;
+    line-height: 1.1;
+  }
+
+  &__km-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    color: $text-muted;
+  }
+}
+
+// ─── Stats ────────────────────────────────────────────────────────────────────
+
+.stats-row {
+  background: #fff;
+  border-radius: $radius-lg;
+  padding: $spacing-sm $spacing-md;
+  box-shadow: 0 1px 4px rgba($blue-dark, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.stat-bloc {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+
+  &__value {
+    font-family: $font-display;
+    font-size: 1rem;
+    font-weight: 700;
+    color: $blue-dark;
+    line-height: 1.2;
+  }
+
+  &__label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+    color: $text-muted;
+  }
+
+  &__sep {
+    width: 1px;
+    height: 32px;
+    background: rgba($blue-dark, 0.08);
+    flex-shrink: 0;
+  }
+}
+
+// ─── Dernière intervention ────────────────────────────────────────────────────
+
+.last-intervention {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+  color: $text-muted;
+  padding: 0 $spacing-xs;
+
+  svg { flex-shrink: 0; opacity: 0.6; }
+}
+
+// ─── En-tête section ─────────────────────────────────────────────────────────
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &__title {
+    font-family: $font-display;
+    font-size: 1rem;
+    font-weight: 700;
+    color: $blue-dark;
+    margin: 0;
+  }
+}
+
+.btn-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: $blue-main;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 7px 14px 7px 10px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:active { background: $blue-dark; }
+}
+
+// ─── État vide ────────────────────────────────────────────────────────────────
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: $spacing-sm;
+  padding: $spacing-xl $spacing-md;
+
+  &__icon { font-size: 2.5rem; opacity: 0.4; }
+
+  &__text {
+    font-size: 0.875rem;
+    color: $text-muted;
+    margin: 0;
+  }
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: $blue-main;
+  color: #fff;
+  border: none;
+  border-radius: 24px;
+  padding: 11px 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+
+  &:active { background: $blue-dark; transform: scale(0.98); }
+}
+
+// ─── Liste interventions ──────────────────────────────────────────────────────
+
+.interventions-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+// ─── Panneau détail intervention ─────────────────────────────────────────────
+
+.panneau-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba($blue-dark, 0.45);
+  backdrop-filter: blur(3px);
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  animation: fadeIn 0.18s ease;
+}
+
+.panneau {
+  background: #fff;
+  border-radius: $radius-lg $radius-lg 0 0;
+  width: 100%;
+  max-width: 430px;
+  padding: $spacing-sm $spacing-md $spacing-md;
+  padding-bottom: calc($spacing-md + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  max-height: 85dvh;
+  overflow-y: auto;
+  transform: translateY(100%);
+  animation: slideUp 0.25s ease forwards;
+
+  &--visible {
+    transform: translateY(0);
+  }
+
+  &__handle {
+    width: 36px;
+    height: 4px;
+    background: rgba($blue-dark, 0.12);
+    border-radius: 2px;
+    margin: 0 auto $spacing-xs;
+    flex-shrink: 0;
+  }
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: $spacing-sm;
+  }
+
+  &__title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  &__label {
+    font-family: $font-display;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: $blue-dark;
+    line-height: 1.2;
+  }
+
+  &__date {
+    font-size: 0.8rem;
+    color: $text-muted;
+  }
+
+  &__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: rgba($blue-dark, 0.07);
+    color: $text-muted;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s;
+
+    &:active { background: rgba($blue-dark, 0.14); }
+  }
+
+  // ── Métriques ──
+  &__metrics {
+    display: flex;
+    gap: $spacing-sm;
+    flex-wrap: wrap;
+  }
+
+  &__metric {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: $blue-bg;
+    color: $blue-main;
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 0.82rem;
+    font-weight: 600;
+
+    &--prix {
+      background: $success-bg;
+      color: $success-text;
+    }
+
+    svg { flex-shrink: 0; }
+  }
+
+  // ── Ligne prestataire ──
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: $spacing-sm $spacing-md;
+    background: $blue-bg;
+    border-radius: $radius-md;
+    gap: $spacing-sm;
+  }
+
+  &__row-key {
+    font-size: 0.78rem;
+    color: $text-muted;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  &__row-val {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: $blue-dark;
+    text-align: right;
+  }
+
+  // ── Notes ──
+  &__notes {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__notes-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: $text-muted;
+  }
+
+  &__notes-text {
+    font-size: 0.875rem;
+    color: $blue-dark;
+    line-height: 1.5;
+    margin: 0;
+    background: rgba($blue-dark, 0.03);
+    border-left: 3px solid rgba($blue-main, 0.3);
+    border-radius: 0 $radius-sm $radius-sm 0;
+    padding: $spacing-sm $spacing-md;
+  }
+
+  // ── Photo ──
+  &__photo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__photo-img {
+    width: 100%;
+    border-radius: $radius-md;
+    max-height: 220px;
+    object-fit: cover;
+    display: block;
+  }
+
+  // ── Actions ──
+  &__actions {
+    display: flex;
+    gap: $spacing-sm;
+    padding-top: $spacing-xs;
+  }
+
+  &__btn {
+    flex: 1;
+    height: 46px;
+    border: none;
+    border-radius: $radius-md;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    transition: opacity 0.15s, transform 0.1s;
+
+    &:active { transform: scale(0.97); }
+
+    &--edit {
+      background: $blue-bg;
+      color: $blue-main;
+    }
+
+    &--delete {
+      background: $danger-bg;
+      color: $danger-text;
+    }
+  }
+}
+
+@keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(60px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }

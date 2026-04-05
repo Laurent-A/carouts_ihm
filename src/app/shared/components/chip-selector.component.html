@@ -1,0 +1,13 @@
+<div class="chip-selector" [class.chip-selector--disabled]="disabled" role="group">
+  @for (opt of options; track opt.value) {
+    <button
+      type="button"
+      class="chip"
+      [class.chip--active]="isSelected(opt.value)"
+      [disabled]="disabled"
+      (click)="toggle(opt.value)"
+      [attr.aria-pressed]="isSelected(opt.value)">
+      {{ opt.label }}
+    </button>
+  }
+</div>
